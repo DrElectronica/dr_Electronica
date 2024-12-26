@@ -73,7 +73,7 @@ const Products = () => {
 
   const handleAddCustomProduct = () => {
     const { title, price } = newProduct;
-    const validPrice = price ? !isNaN(price) && parseFloat(price) > 0 : true;
+    const validPrice = price ? !isNaN(Number(price)) && Number(price) > 0 : true;
 
     if (validPrice) {
       const customProduct = {

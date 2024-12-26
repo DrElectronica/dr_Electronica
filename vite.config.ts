@@ -10,9 +10,11 @@ if (process.env.TEMPO === "true") {
   conditionalPlugins.push(["tempo-devtools/swc", {}]);
 }
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  base: "/Web",
+  build: {
+    outDir: 'build', // Define el directorio de salida
+  },
+  base: "/dr_Electronica", // Asegúrate de que este sea el nombre de tu repositorio
   optimizeDeps: {
     entries: ["src/main.tsx", "src/tempobook/**/*"],
   },

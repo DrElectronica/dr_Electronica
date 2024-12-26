@@ -47,13 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Check user credentials
-    const userMatch = USER_CREDENTIALS.find(
-      (u) => u.email === email && u.password === password,
-    );
-    if (userMatch) {
-      setUser({ email, role: "user" });
-      return true;
-    }
 
     return false;
   };

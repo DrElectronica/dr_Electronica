@@ -1,0 +1,47 @@
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches: ["gh-pages"]  # Se activa cuando haces un push al branch gh-pages
+  workflow_dispatch:  # Permite ejecutar el flujo manualmente desde la pestaña de Actions
+
+permissions:
+  contents: read  # Permite leer el contenido del repositorio
+  pages: write    # Permite escribir en GitHub Pages
+  id-token: write # Permite escribir el token de autenticación
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false  # No cancela las ejecuciones en curso, deja que finalicen
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest  # El flujo de trabajo corre en un runner de Ubuntu
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Obtiene el código del repositorio
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Usa la versión de Node.js que necesites
+
+      - name: Install dependencies
+        run: |
+          npm install  # Instala las dependencias de tu proyecto (si es un proyecto Node.js)
+
+      - name: Build the project
+        run: |
+          npm run build  # Compila tu proyecto, asegúrate de tener el script 'build' en tu package.json
+
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './build'  # Asegúrate de que la carpeta build/ contenga los archivos estáticos a desplegar
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

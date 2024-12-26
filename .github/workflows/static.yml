@@ -1,47 +1,43 @@
 name: Deploy static content to Pages
 
 on:
+  # Trigger el despliegue cuando se haga push al branch gh-pages
   push:
-    branches: ["gh-pages"]  # Se activa cuando haces un push al branch gh-pages
-  workflow_dispatch:  # Permite ejecutar el flujo manualmente desde la pestaña de Actions
+    branches: ["gh-pages"]
+  
+  # Permite ejecutar este flujo manualmente desde la pestaña de Actions
+  workflow_dispatch:
 
+# Permisos para interactuar con GitHub Pages
 permissions:
-  contents: read  # Permite leer el contenido del repositorio
-  pages: write    # Permite escribir en GitHub Pages
-  id-token: write # Permite escribir el token de autenticación
+  contents: read
+  pages: write
+  id-token: write
 
+# Configuración para que solo se ejecute una instancia del despliegue a la vez
 concurrency:
   group: "pages"
-  cancel-in-progress: false  # No cancela las ejecuciones en curso, deja que finalicen
+  cancel-in-progress: false
 
 jobs:
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest  # El flujo de trabajo corre en un runner de Ubuntu
+    runs-on: ubuntu-latest
+
     steps:
+      # Paso 1: Checkout del repositorio
       - name: Checkout repository
-        uses: actions/checkout@v4  # Obtiene el código del repositorio
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # Usa la versión de Node.js que necesites
-
-      - name: Install dependencies
-        run: |
-          npm install  # Instala las dependencias de tu proyecto (si es un proyecto Node.js)
-
-      - name: Build the project
-        run: |
-          npm run build  # Compila tu proyecto, asegúrate de tener el script 'build' en tu package.json
-
+      # Paso 2: Subir los archivos de la carpeta de build (ajusta la ruta según tus necesidades)
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build'  # Asegúrate de que la carpeta build/ contenga los archivos estáticos a desplegar
+          path: './build'  # Cambia esta ruta si los archivos generados están en otro directorio
 
+      # Paso 3: Desplegar los archivos estáticos a GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

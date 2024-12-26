@@ -62,7 +62,7 @@ const Contact = () => {
           <div className="rounded-lg overflow-hidden shadow-md">
             <a href="https://maps.app.goo.gl/so4HecTTWvCZgBX29" target="_blank">
               <img
-                src="/ubicacion.jpg"
+                src="./ubicacion.jpg"
                 alt="Ubicación"
                 width="800"
                 style={{ maxWidth: "100%", height: "auto" }}

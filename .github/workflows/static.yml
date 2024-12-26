@@ -8,13 +8,11 @@ on:
   # Permite ejecutar este flujo manualmente desde la pestaña de Actions
   workflow_dispatch:
 
-# Permisos para interactuar con GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Configuración para que solo se ejecute una instancia del despliegue a la vez
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -31,13 +29,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Paso 2: Subir los archivos de la carpeta de build (ajusta la ruta según tus necesidades)
+      # Paso 2: Configura Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # O la versión de Node.js que necesites
+
+      # Paso 3: Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # Paso 4: Construir la aplicación
+      - name: Build the application
+        run: npm run build  # O el comando que uses para generar los archivos estáticos
+
+      # Paso 5: Subir los archivos generados al repositorio de GitHub Pages
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build'  # Cambia esta ruta si los archivos generados están en otro directorio
+          path: './build'  # Cambia esta ruta si tus archivos generados están en otro directorio
 
-      # Paso 3: Desplegar los archivos estáticos a GitHub Pages
+      # Paso 6: Desplegar los archivos en GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
